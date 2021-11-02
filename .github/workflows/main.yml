@@ -32,3 +32,4 @@ jobs:
 
       - name: Archive libs
         uses: actions/download-artifact@v2
+        path: deps
