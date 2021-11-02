@@ -21,12 +21,7 @@ jobs:
       - name: Install mpv-iina
         run: |
           brew tap xjbeta/homebrew-mpv-iina
-          zsh -c 'for dependency in $(brew deps --include-build -n mpv-iina); do brew install --build-from-source $dependency; done'
-
-      - name: local/lib LC_BUILD_VERSION LC_VERSION_MIN_MACOSX
-        run: |
-          zsh -c 'for lib in /usr/local/lib/*; do (echo $lib; otool -l $lib | grep -i LC_BUILD_VERSION -A 4); done'
-        
+          brew install mpv-iina
 
       - name: Run change_lib_dependencies.rb
         run: |
