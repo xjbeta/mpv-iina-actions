@@ -31,7 +31,4 @@ jobs:
         run: other/change_lib_dependencies.rb "$(brew --prefix)" "$(brew --prefix mpv-iina)/lib/libmpv.dylib"
 
       - name: Archive libs
-        uses: actions/upload-artifact@v2
-        with:
-          name: libs
-          path: deps/libs/
+        uses: actions/download-artifact@v2
