@@ -8,6 +8,11 @@ on:
         default: "warning"
       tags:
         description: "Test scenario tags"
+
+env:
+  CFLAGS: -mmacosx-version-min=10.12
+  LDFLAGS: -mmacosx-version-min=10.12
+
 jobs:
   release-osx:
     runs-on: macos-10.15
@@ -18,3 +23,15 @@ jobs:
 
       - name: Install mpv-iina
         run: brew install mpv-iina
+
+      - name: Make deps folder
+        run: mkdir deps
+
+      - name: Run change_lib_dependencies.rb
+        run: other/change_lib_dependencies.rb "$(brew --prefix)" "$(brew --prefix mpv-iina)/lib/libmpv.dylib"
+
+      - name: Archive libs
+        uses: actions/upload-artifact@v2
+        with:
+          name: libs
+          path: deps/libs/
