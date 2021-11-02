@@ -23,6 +23,11 @@ jobs:
           brew tap xjbeta/homebrew-mpv-iina
           zsh -c 'for dependency in $(brew deps --include-build -n mpv-iina); do brew install --build-from-source $dependency; done'
 
+      - name: local/lib LC_BUILD_VERSION LC_VERSION_MIN_MACOSX
+        run: |
+          zsh -c 'for lib in /usr/local/lib/*; do (echo $lib; otool -l $lib | grep -i LC_BUILD_VERSION -A 4); done'
+        
+
       - name: Run change_lib_dependencies.rb
         run: |
           mkdir deps
@@ -30,8 +35,8 @@ jobs:
 
       - name: dylibs LC_BUILD_VERSION LC_VERSION_MIN_MACOSX
         run: |
-          zsh -c 'for lib in deps/lib/*(.); do (echo $lib; otool -l $lib | grep -i LC_BUILD_VERSION -A 4); done'
-          zsh -c 'for lib in deps/lib/*(.); do (echo $lib; otool -l $lib | grep -A 3 LC_VERSION_MIN_MACOSX); done'
+          zsh -c 'for lib in deps/lib/*; do (echo $lib; otool -l $lib | grep -i LC_BUILD_VERSION -A 4); done'
+          zsh -c 'for lib in deps/lib/*; do (echo $lib; otool -l $lib | grep -A 3 LC_VERSION_MIN_MACOSX); done'
         
 
       - name: Archive libs
