@@ -18,22 +18,20 @@ jobs:
     runs-on: macos-10.15
     steps:
       - uses: actions/checkout@v2
-      - name: Tab xjbeta/homebrew-mpv-iina
-        run: brew tap xjbeta/homebrew-mpv-iina
-
       - name: Install mpv-iina
-        run: brew install mpv-iina
-
-      - name: Make deps folder
-        run: mkdir deps
+        run: |
+          brew tap xjbeta/homebrew-mpv-iina
+          zsh -c 'for dependency in $(brew deps --include-build -n mpv-iina); do brew install --build-from-source $dependency; done'
 
       - name: Run change_lib_dependencies.rb
-        run: other/change_lib_dependencies.rb "$(brew --prefix)" "$(brew --prefix mpv-iina)/lib/libmpv.dylib"
+        run: |
+          mkdir deps
+          other/change_lib_dependencies.rb "$(brew --prefix)" "$(brew --prefix mpv-iina)/lib/libmpv.dylib"
 
-      - name: dylibs LC_BUILD_VERSION
-        run: zsh -c 'for lib in deps/lib/*(.); do (echo $lib; otool -l $lib | grep -i LC_BUILD_VERSION -A 4); done'
-      - name: dylibs LC_VERSION_MIN_MACOSX
-        run: zsh -c 'for lib in deps/lib/*(.); do (echo $lib; otool -l $lib | grep -A 3 LC_VERSION_MIN_MACOSX); done'
+      - name: dylibs LC_BUILD_VERSION LC_VERSION_MIN_MACOSX
+        run: |
+          zsh -c 'for lib in deps/lib/*(.); do (echo $lib; otool -l $lib | grep -i LC_BUILD_VERSION -A 4); done'
+          zsh -c 'for lib in deps/lib/*(.); do (echo $lib; otool -l $lib | grep -A 3 LC_VERSION_MIN_MACOSX); done'
         
 
       - name: Archive libs
