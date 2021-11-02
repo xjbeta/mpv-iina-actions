@@ -30,6 +30,12 @@ jobs:
       - name: Run change_lib_dependencies.rb
         run: other/change_lib_dependencies.rb "$(brew --prefix)" "$(brew --prefix mpv-iina)/lib/libmpv.dylib"
 
+      - name: dylibs LC_BUILD_VERSION
+        run: for lib in deps/lib/*(.); do (echo $lib; otool -l $lib | grep -i LC_BUILD_VERSION -A 4); done
+      - name: dylibs LC_VERSION_MIN_MACOSX
+        run: for lib in deps/lib/*(.); do (echo $lib; otool -l $lib | grep -A 3 LC_VERSION_MIN_MACOSX); done
+        
+
       - name: Archive libs
         uses: actions/download-artifact@v2
         with:
